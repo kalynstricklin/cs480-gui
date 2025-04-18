@@ -1,5 +1,7 @@
 package panels;
 
+import components.ButtonComponent;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
@@ -9,6 +11,8 @@ public class UploadFilePanel extends JPanel {
 
     private JTextField filePathField;
     private JButton uploadButton;
+
+    ButtonComponent buttonComponent;
 
     public UploadFilePanel(){
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -27,15 +31,21 @@ public class UploadFilePanel extends JPanel {
         uploadButton = new JButton("Upload File");
         uploadButton.addActionListener(e -> handleFileUpload());
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
-        buttonPanel.setBackground(Color.WHITE);
-        buttonPanel.add(filePathField);
-        buttonPanel.add(uploadButton);
+
+        JPanel uploadPanel = new JPanel();
+        uploadPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        uploadPanel.setBackground(Color.WHITE);
+        uploadPanel.add(filePathField);
+        uploadPanel.add(uploadButton);
+
+
+        buttonComponent = new ButtonComponent();
+
         add(Box.createVerticalStrut(10));
         add(title);
         add(Box.createVerticalStrut(10));
-        add(buttonPanel);
+        add(uploadPanel);
+        add(buttonComponent);
 
     }
 
@@ -48,10 +58,6 @@ public class UploadFilePanel extends JPanel {
 
             filePathField.setText(selectedFile.getAbsolutePath());
             System.out.println("Selected File: " + selectedFile.getAbsoluteFile());
-
-            // run tshark :-D
         }
-
     }
-
 }

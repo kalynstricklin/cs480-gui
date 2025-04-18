@@ -10,8 +10,8 @@ public class MessageComponent extends JPanel {
 
     public MessageComponent() {
         messageField = new JLabel();
-        messageField.setFont(getFont().deriveFont(Font.PLAIN, 20));
-        messageField.setText("Import PCAP file, click start to begin analyzing packets");
+        messageField.setFont(getFont().deriveFont(Font.PLAIN, 16));
+        messageField.setText("Upload PCAP File or Start Local Network Scanner");
         messageField.setVisible(true);
         add(messageField);
     }

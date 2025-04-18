@@ -1,25 +1,21 @@
-import models.SimulatorState;
-
-import java.awt.*;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 
 public class Main {
     static Simulator simulator;
 
     public static void main(String[] args) {
 
-        SimulatorFrame simulatorFrame = new SimulatorFrame();
+        GUIFrame gui = new GUIFrame();
 
-        var panel = simulatorFrame.getSimulatorPanel();
-        var input = panel.getInputComponent();
-        var message = panel.getMessageComponent();
+//        var panel = packetAnalyzerGUI.getSimulatorPanel();
+//        var input = panel.getInputComponent();
+//        var message = panel.getMessageComponent();
 
-        input.getStartButton().addActionListener((event) -> {
-            if(!input.getFileNameInput().getText().isEmpty()) {
-                try {
-                    simulator = new Simulator(input.getFileNameInput().getText());
-                    simulator.init();
+//        input.getStartButton().addActionListener((event) -> {
+//            if(!input.getFileNameInput().getText().isEmpty()) {
+//                try {
+//                    simulator = new Simulator(input.getFileNameInput().getText());
+//                    simulator.init();
 
 //                    simulator.addScanListener(scan -> {
 //                        input.getCSVLineField().setText(scan);
@@ -36,14 +32,14 @@ public class Main {
 //                        }
 //                    });
 
-                    simulator.start();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
+//                    simulator.start();
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        });
 
-        simulatorFrame.addWindowStateListener(e -> {
+        gui.addWindowStateListener(e -> {
             if(e.getNewState() == WindowEvent.WINDOW_CLOSED && simulator != null) {
                 simulator.stop();
             }

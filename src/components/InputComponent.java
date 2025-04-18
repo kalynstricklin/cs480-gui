@@ -8,10 +8,9 @@ import java.awt.event.ActionListener;
 
 public class InputComponent extends JPanel {
 
-    private static final String[] labels = {"File Name", "Port", "Scan Data"};
+    private static final String[] labels = {"File Name", "Packet Results"};
     JTextField[] fields;
     JButton startButton;
-    JCheckBox quickReadBox;
 
     public InputComponent(){
 
@@ -34,10 +33,9 @@ public class InputComponent extends JPanel {
         }
 
         JPanel buttonContainer = new JPanel();
-        buttonContainer.setLayout(new GridLayout(3, 1));
+        buttonContainer.setLayout(new GridLayout(2, 1));
 
         startButton = new JButton("Start");
-        quickReadBox = new JCheckBox("Quick Read");
         JButton openFileButton = new JButton("Choose File");
 
         openFileButton.addActionListener(e -> {
@@ -51,7 +49,6 @@ public class InputComponent extends JPanel {
         });
 
         buttonContainer.add(openFileButton);
-        buttonContainer.add(quickReadBox);
         buttonContainer.add(startButton);
 
         add(inputPanel);
@@ -62,17 +59,11 @@ public class InputComponent extends JPanel {
     public JTextField getFileNameInput(){
         return fields[0];
     }
-    public JTextField getPortInput(){
-        return fields[1];
-    }
-    public JTextField getCSVLineField(){ return fields[2]; }
+    public JTextField getCSVLineField(){ return fields[1]; }
     public JButton getStartButton() {
         return startButton;
     }
 
-    public JCheckBox getQuickReadBox() {
-        return quickReadBox;
-    }
 
     public void clearInput(){
        for(int i=0; i< fields.length; i++){

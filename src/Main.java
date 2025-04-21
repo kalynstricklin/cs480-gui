@@ -1,56 +1,59 @@
-import models.SimulatorState;
-
-import java.awt.*;
-import java.awt.event.WindowEvent;
+import javax.swing.*;
 import java.io.IOException;
 
 public class Main {
-    static Simulator simulator;
+    static Analyzer analyzer;
+    static GUIFrame gui;
 
     public static void main(String[] args) {
+        gui = new GUIFrame();
+        analyzer = new Analyzer();
+        String csvOutput = "networkScanOutput.csv";
 
-        SimulatorFrame simulatorFrame = new SimulatorFrame();
+        // Upload file panel START button listener
+        gui.getUploadFilePanel().getButtons().getStartButton().addActionListener(e -> {
+            if(gui.getUploadFilePanel().getFilePath().isBlank() || gui.getUploadFilePanel().getFilePath().isEmpty()) {
+                JOptionPane.showMessageDialog(gui, "Please select a file to upload");
+                return;
+            }
 
-        var panel = simulatorFrame.getSimulatorPanel();
-        var input = panel.getInputComponent();
-        var message = panel.getMessageComponent();
+            analyzer.setFileName(gui.getUploadFilePanel().getFilePath());
+                new Thread(() -> {
+                    try {
+                        analyzer.startTShark();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }).start();
+                
+            gui.getUploadFilePanel().getButtons().getStartButton().setEnabled(false);
+        });
 
-        input.getStartButton().addActionListener((event) -> {
-            if(!input.getFileNameInput().getText().isEmpty()
-            && !input.getPortInput().getText().isEmpty()) {
-                try {
-                    simulator = new Simulator(
-                            Integer.parseInt(input.getPortInput().getText()),
-                            input.getFileNameInput().getText(),
-                            input.getQuickReadBox().isSelected());
-                    simulator.init();
+        // Network scanner START button listener
+        gui.getNetworkScannerPanel().getButtons().getStartButton().addActionListener(e -> {
+            try {
+                analyzer.startTShark();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
 
-                    simulator.addScanListener(scan -> {
-                        input.getCSVLineField().setText(scan);
-                    });
-                    simulator.addStateListener(state -> {
-                        if(state == SimulatorState.WAITING) {
-                            message.setMessage("Server started. Awaiting client connection...", new Color(141, 173, 0));
-                        } else if(state == SimulatorState.CONNECTED) {
-                            message.setMessage("Connected to client! Listen to port " + input.getPortInput().getText() + " for RPM scans.", new Color(0, 95, 11));
-                        } else if(state == SimulatorState.ERROR) {
-                            message.setMessage("File not found!", new Color(180, 30, 0));
-                        } else if(state == SimulatorState.ENDED) {
-                            message.setMessage("Connection closed! No more data.", new Color(180, 30, 0));
-                        }
-                    });
+            gui.getNetworkScannerPanel().getButtons().getStartButton().setEnabled(false);
+        });
 
-                    simulator.start();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+        // Upload file panel STOP button listener
+        gui.getUploadFilePanel().getButtons().getStopButton().addActionListener(e -> {
+
+        });
+
+        // Network scanner STOP button listener
+        gui.getNetworkScannerPanel().getButtons().getStopButton().addActionListener(e -> {
+            analyzer.stopTShark();
+            try {
+                analyzer.startPredictionModel(csvOutput);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
         });
 
-        simulatorFrame.addWindowStateListener(e -> {
-            if(e.getNewState() == WindowEvent.WINDOW_CLOSED && simulator != null) {
-                simulator.stop();
-            }
-        });
     }
 }

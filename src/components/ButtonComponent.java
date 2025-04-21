@@ -29,6 +29,14 @@ public class ButtonComponent extends JPanel {
     }
 
 
+    public void handleStartScan() {
+
+    }
+
+    public void handleStopScan() {
+
+    }
+
     public JButton getStartButton() {
         return startButton;
     }
@@ -36,5 +44,7 @@ public class ButtonComponent extends JPanel {
     public JButton getStopButton() {
         return stopButton;
     }
+
+
 }
 

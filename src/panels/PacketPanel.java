@@ -14,7 +14,7 @@ public class PacketPanel extends JPanel {
 
         setBackground(Color.WHITE);
 
-        label = new JLabel("Predicted Packets");
+        label = new JLabel("Suspicious Packets");
         packetOutputArea = new JTextArea(20, 80);
         packetOutputArea.setLineWrap(true);
         packetOutputArea.setEditable(false);
@@ -26,6 +26,7 @@ public class PacketPanel extends JPanel {
 
     public void addPacketLine(String line) {
         packetOutputArea.append(line + "\n");
+        packetOutputArea.setCaretPosition(packetOutputArea.getDocument().getLength());
     }
 
 }

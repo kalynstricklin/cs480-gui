@@ -17,16 +17,6 @@ public class GUIFrame extends JFrame {
     private UploadFilePanel uploadFilePanel;
     private PacketPanel packetPanel;
 
-    public GUIFrame() {
-        setTitle("Machine Learning Network Packet Analyzer");
-        setSize(900,600);
-    JPanel mainPanel;
-    JPanel controlPanel;
-
-    MessageComponent messageComponent;
-    NetworkScannerPanel networkScannerPanel;
-    UploadFilePanel uploadFilePanel;
-    PacketPanel packetPanel;
 
     public GUIFrame() {
         setTitle("Machine Learning Network Packet Analyzer");

@@ -7,7 +7,6 @@ import java.awt.*;
 
 public class NetworkScannerPanel extends JPanel {
 
-
     private JTextField ipField;
     ButtonComponent buttonComponent;
 
@@ -25,9 +24,7 @@ public class NetworkScannerPanel extends JPanel {
         ipField.setHorizontalAlignment(JTextField.CENTER);
         ipField.setEditable(false);
 
-
         buttonComponent = new ButtonComponent();
-
 
         add(Box.createVerticalStrut(10));
         add(title);
@@ -41,4 +38,7 @@ public class NetworkScannerPanel extends JPanel {
         return ipField.getText();
     }
 
+    public ButtonComponent getButtons() {
+        return buttonComponent;
+    }
 }

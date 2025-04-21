@@ -23,4 +23,9 @@ public class PacketPanel extends JPanel {
         add(label);
         add(scrollPane);
     }
+
+    public void addPacketLine(String line) {
+        packetOutputArea.append(line + "\n");
+    }
+
 }

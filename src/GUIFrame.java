@@ -10,10 +10,20 @@ import java.awt.*;
 
 public class GUIFrame extends JFrame {
 
+    private JPanel mainPanel;
+    private JPanel controlPanel;
+
+    private NetworkScannerPanel networkScannerPanel;
+    private UploadFilePanel uploadFilePanel;
+    private PacketPanel packetPanel;
+
+    public GUIFrame() {
+        setTitle("Machine Learning Network Packet Analyzer");
+        setSize(900,600);
     JPanel mainPanel;
     JPanel controlPanel;
 
-    MessageComponent messageComponent = new MessageComponent();
+    MessageComponent messageComponent;
     NetworkScannerPanel networkScannerPanel;
     UploadFilePanel uploadFilePanel;
     PacketPanel packetPanel;
@@ -26,28 +36,38 @@ public class GUIFrame extends JFrame {
         setLocationRelativeTo(null);
         setBackground(Color.LIGHT_GRAY);
 
-
         mainPanel = new JPanel(new GridLayout(3, 1));
 
         controlPanel = new JPanel(new GridLayout(1, 2));
 
         mainPanel.setBackground(Color.WHITE);
 
+//        messageComponent = new MessageComponent();
         networkScannerPanel = new NetworkScannerPanel();
         uploadFilePanel = new UploadFilePanel();
         packetPanel = new PacketPanel();
 
-
         controlPanel.add(networkScannerPanel);
         controlPanel.add(uploadFilePanel);
 
-        mainPanel.add(messageComponent);
+//        mainPanel.add(messageComponent);
         mainPanel.add(controlPanel);
-//        mainPanel.add(packetPanel);
+        mainPanel.add(packetPanel);
 
         add(mainPanel);
         setVisible(true);
     }
 
+    public NetworkScannerPanel getNetworkScannerPanel() {
+        return networkScannerPanel;
+    }
+
+    public UploadFilePanel getUploadFilePanel() {
+        return uploadFilePanel;
+    }
+
+    public PacketPanel getPacketPanel() {
+        return packetPanel;
+    }
 
 }

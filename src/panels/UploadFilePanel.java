@@ -11,6 +11,7 @@ public class UploadFilePanel extends JPanel {
 
     private JTextField filePathField;
     private JButton uploadButton;
+    private JTextField statusField;
 
     ButtonComponent buttonComponent;
 
@@ -31,12 +32,17 @@ public class UploadFilePanel extends JPanel {
         filePathField.setHorizontalAlignment(JTextField.CENTER);
         filePathField.setEditable(false);
 
+        statusField = new JTextField(15);
+        statusField.setMaximumSize(new Dimension(200, 30));
+        statusField.setHorizontalAlignment(JTextField.CENTER);
+        statusField.setEditable(false);
+        statusField.setText("IDLE");
+
         uploadButton = new JButton("Upload File");
         uploadButton.addActionListener(e -> handleFileUpload());
         uploadButton.setBackground(Color.BLUE);
         uploadButton.setForeground(Color.WHITE);
         uploadButton.setFont(new Font("Arial", Font.BOLD, 14));
-        uploadButton.addActionListener(e -> handleFileUpload());
 
         JPanel uploadPanel = new JPanel();
         uploadPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 0));
@@ -44,15 +50,20 @@ public class UploadFilePanel extends JPanel {
         uploadPanel.add(filePathField);
         uploadPanel.add(uploadButton);
 
-
         buttonComponent = new ButtonComponent();
 
-        add(Box.createVerticalStrut(10));
         add(title);
         add(Box.createVerticalStrut(10));
         add(uploadPanel);
+        add(Box.createVerticalStrut(5));
+        add(statusField);
+        add(Box.createVerticalStrut(5));
         add(buttonComponent);
 
+    }
+
+    public JTextField getStatusField() {
+        return statusField;
     }
 
     public void handleFileUpload(){

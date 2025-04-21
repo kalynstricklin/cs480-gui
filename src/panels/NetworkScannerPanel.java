@@ -23,6 +23,7 @@ public class NetworkScannerPanel extends JPanel {
         ipField.setMaximumSize(new Dimension(200, 30));
         ipField.setHorizontalAlignment(JTextField.CENTER);
         ipField.setEditable(false);
+        ipField.setText("IDLE");
 
         buttonComponent = new ButtonComponent();
 
@@ -34,8 +35,8 @@ public class NetworkScannerPanel extends JPanel {
         add(buttonComponent);
     }
 
-    public String getIpAddress() {
-        return ipField.getText();
+    public JTextField getField() {
+        return ipField;
     }
 
     public ButtonComponent getButtons() {

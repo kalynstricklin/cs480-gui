@@ -16,7 +16,7 @@ public class GUIFrame extends JFrame {
     private NetworkScannerPanel networkScannerPanel;
     private UploadFilePanel uploadFilePanel;
     private PacketPanel packetPanel;
-
+    private MessageComponent messageComponent;
 
     public GUIFrame() {
         setTitle("Machine Learning Network Packet Analyzer");
@@ -26,13 +26,12 @@ public class GUIFrame extends JFrame {
         setLocationRelativeTo(null);
         setBackground(Color.LIGHT_GRAY);
 
-        mainPanel = new JPanel(new GridLayout(3, 1));
+        mainPanel = new JPanel(new GridLayout(2, 1));
 
         controlPanel = new JPanel(new GridLayout(1, 2));
 
         mainPanel.setBackground(Color.WHITE);
 
-//        messageComponent = new MessageComponent();
         networkScannerPanel = new NetworkScannerPanel();
         uploadFilePanel = new UploadFilePanel();
         packetPanel = new PacketPanel();

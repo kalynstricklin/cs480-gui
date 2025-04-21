@@ -1,8 +1,8 @@
 import listeners.PacketListener;
+import listeners.WriteListener;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,35 +14,58 @@ public class Analyzer {
     Process pythonProcess;
     List<PacketListener> suspiciousPacketListeners;
     List<PacketListener> newPacketListeners;
-    List<String> tSharkCommand;
-    List<String> pythonCommand;
+    List<WriteListener> writeListeners;
+    final List<String> pythonCommand;
+    final List<String> tSharkCommand = Arrays.asList("tshark","-l", "-T", "fields", "-e", "frame.number", "-e", "frame.time_relative", "-e", "ip.src", "-e", "ip.dst", "-e", "_ws.col.Protocol", "-e", "frame.len", "-e", "_ws.col.info", "-E", "separator=\",\"");
+    PrintWriter writer;
+    File projectPath;
 
     public Analyzer() {
-        tSharkCommand = Arrays.asList("tshark", "-T", "fields", "-e", "frame.number", "-e", "frame.time_relative", "-e", "ip.src", "-e", "ip.dst", "-e", "frame.len", "-e", "_ws.col.info", "-E", "separator=\",\"");
+        newPacketListeners = new ArrayList<>();
+        suspiciousPacketListeners = new ArrayList<>();
+        writeListeners = new ArrayList<>();
         tSharkProcessBuilder = new ProcessBuilder(tSharkCommand);
-        pythonCommand = Arrays.asList("python", "-m", "main.py");
-        pythonProcessBuilder = new ProcessBuilder(pythonCommand);
+        projectPath = new File(".").getAbsoluteFile().getParentFile().getParentFile().getParentFile();
+        pythonCommand = Arrays.asList(projectPath.getAbsolutePath() + "/.venv/Scripts/python.exe", "-m", "app");
     }
 
-    public void setFileName(String filename) {
-        if (tSharkCommand.get(tSharkCommand.size()-2).equals("-r")) {
-            tSharkCommand.remove(tSharkCommand.size()-1);
-            tSharkCommand.remove(tSharkCommand.size()-1);
+    public String startTSharkBatch(String inputFile, String outputFile) throws IOException {
+        List<String> command = new ArrayList<>(tSharkCommand);
+        command.add("-r");
+        command.add(inputFile);
+        tSharkProcessBuilder = new ProcessBuilder(command);
+        tSharkProcess = tSharkProcessBuilder.start();
+
+        File file = new File(outputFile);
+        FileWriter fileWriter = new FileWriter(file);
+        fileWriter.write("No.,Time,Source,Destination,Protocol,Length,Info\n");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(tSharkProcess.getInputStream()));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            fileWriter.write(line.replace("\\,", ".") + "\n");
         }
+        fileWriter.flush();
+        fileWriter.close();
 
-        if (filename != null && !filename.isEmpty())
-            tSharkCommand.addAll(Arrays.asList( "-r", filename));
+        System.out.println("Completed tshark process");
+        return file.getAbsolutePath();
     }
 
-    public void startTShark() throws IOException {
+    public void startTSharkRealtime() throws IOException {
+        System.out.println("Starting realtime tshark process");
+        List<String> command = new ArrayList<>(tSharkCommand);
+        command.add(2, "-i");
+        //TODO Change to correct interface #
+        command.add(3, "9");
+        tSharkProcessBuilder = new ProcessBuilder(command);
         tSharkProcess = tSharkProcessBuilder.start();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(tSharkProcess.getInputStream()));
         String line;
         while ((line = reader.readLine()) != null) {
-            System.out.println(line);
             notifyNewPacketListeners(line);
         }
+        System.out.println("Completed realtime tshark process");
     }
 
     public void stopTShark() {
@@ -50,16 +73,61 @@ public class Analyzer {
             tSharkProcess.destroy();
     }
 
-    public void startPredictionModel(String inputCsv) throws IOException {
-        // TODO: Add input CSV flag to python command, or use realtime flag
+    public String startPredictionModelBatch(String inputFile) throws IOException {
+        System.out.println("Starting batch prediction model");
+        List<String> command = new ArrayList<>(pythonCommand);
+        command.add("--file");
+        command.add(inputFile);
+        pythonProcessBuilder = new ProcessBuilder(command);
+        pythonProcessBuilder.directory(new File(projectPath.getAbsolutePath() + "/backend"));
         pythonProcess = pythonProcessBuilder.start();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(pythonProcess.getInputStream()));
         String line;
         while ((line = reader.readLine()) != null) {
             System.out.println(line);
-            notifySuspiciousPacketListeners(line);
+            if(line.startsWith("Predictions saved to "))
+                return projectPath.getAbsolutePath() + "/backend/" + line.substring("Predictions saved to ".length());
         }
+        return "";
+    }
+
+    public void startPredictionModelRealtime() throws IOException {
+        System.out.println("Starting realtime prediction model process");
+        List<String> command = new ArrayList<>(pythonCommand);
+        command.add("--realtime");
+        pythonProcessBuilder = new ProcessBuilder(command);
+        pythonProcessBuilder.directory(new File(projectPath.getAbsolutePath() + "/backend"));
+        pythonProcess = pythonProcessBuilder.start();
+        writer = new PrintWriter(pythonProcess.getOutputStream(), true);
+
+        new Thread(() -> {
+            String err;
+            while(true) {
+                try {
+                    if ((err = pythonProcess.errorReader().readLine()) != null)
+                        System.out.println(err);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(pythonProcess.getInputStream()));
+        String line;
+        String latestPacket = "";
+        while ((line = reader.readLine()) != null) {
+            if(line.startsWith("["))
+                latestPacket = line;
+            if(line.contains("Prediction: 1"))
+                notifySuspiciousPacketListeners(latestPacket);
+        }
+        System.out.println("Completed realtime prediction model process");
+    }
+
+    public void writePacketToPredictionModel(String packet) {
+        if(writer != null)
+            writer.println(packet);
     }
 
     public void stopPredictionModel() {

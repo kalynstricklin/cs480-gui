@@ -9,7 +9,7 @@ public class ButtonComponent extends JPanel {
     private JButton startButton;
     private JButton stopButton;
 
-    public ButtonComponent(){
+    public ButtonComponent() {
         startButton = new JButton("Start");
         startButton.setBackground(Color.BLUE);
         startButton.setForeground(Color.WHITE);
@@ -33,14 +33,15 @@ public class ButtonComponent extends JPanel {
     }
 
 
-    public void handleStartScan(){
-
-    }
-    public void handleStopScan(){
+    public void handleStartScan() {
 
     }
 
-    public JButton getStartButton(){
+    public void handleStopScan() {
+
+    }
+
+    public JButton getStartButton() {
         return startButton;
     }
 
@@ -48,4 +49,4 @@ public class ButtonComponent extends JPanel {
         return stopButton;
     }
 
-
+}

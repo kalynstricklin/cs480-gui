@@ -7,7 +7,6 @@ import java.awt.*;
 
 public class NetworkScannerPanel extends JPanel {
 
-
     private JTextField ipField;
     ButtonComponent buttonComponent;
 
@@ -16,9 +15,9 @@ public class NetworkScannerPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.WHITE);
 
-        JLabel title = new JLabel("Local Network Scanner", SwingConstants.CENTER);
+        JLabel title = new JLabel("Network Scanner", SwingConstants.CENTER);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        title.setFont(new Font("SansSerif", Font.BOLD, 14));
+        title.setFont(new Font("SansSerif", Font.BOLD, 18));
 
         ipField = new JTextField(15);
         ipField.setMaximumSize(new Dimension(200, 30));
@@ -42,5 +41,4 @@ public class NetworkScannerPanel extends JPanel {
     public ButtonComponent getButtons() {
         return buttonComponent;
     }
-
 }

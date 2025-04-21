@@ -1,5 +1,7 @@
+
 import javax.swing.*;
 import java.io.IOException;
+import java.awt.event.WindowEvent;
 
 public class Main {
     static Analyzer analyzer;
@@ -54,6 +56,8 @@ public class Main {
                 throw new RuntimeException(ex);
             }
         });
+
+        GUIFrame gui = new GUIFrame();
 
     }
 }

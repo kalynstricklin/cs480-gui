@@ -14,13 +14,16 @@ public class UploadFilePanel extends JPanel {
 
     ButtonComponent buttonComponent;
 
+
     public UploadFilePanel() {
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.WHITE);
 
         JLabel title = new JLabel("Upload PCAP File", SwingConstants.CENTER);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        title.setFont(new Font("SansSerif", Font.BOLD, 14));
+
+        title.setFont(new Font("SansSerif", Font.BOLD, 18));
 
         // File selected
         filePathField = new JTextField(15);
@@ -29,6 +32,10 @@ public class UploadFilePanel extends JPanel {
         filePathField.setEditable(false);
 
         uploadButton = new JButton("Upload File");
+        uploadButton.addActionListener(e -> handleFileUpload());
+        uploadButton.setBackground(Color.BLUE);
+        uploadButton.setForeground(Color.WHITE);
+        uploadButton.setFont(new Font("Arial", Font.BOLD, 14));
         uploadButton.addActionListener(e -> handleFileUpload());
 
         JPanel uploadPanel = new JPanel();
@@ -48,7 +55,7 @@ public class UploadFilePanel extends JPanel {
 
     }
 
-    private void handleFileUpload() {
+    public void handleFileUpload(){
         JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         int result = fileChooser.showOpenDialog(this);
 
